@@ -6,30 +6,26 @@ describe("Mercari User Test", () => {
   });
 
   it("successfully loads the home page", () => {
-    cy.get("[data-testid=MercariLogo]").should("be.visible");
-    cy.get("[data-testid=SearchInput]").should("be.visible");
-    cy.get("[data-testid=SignupButton]").should("be.visible");
-    cy.get("[data-testid=LoginButton]").should("be.visible");
-    cy.get("[data-testid=CategoryNav]").should("be.visible");
+    cy.loadHomePage();
   });
 
   it("logs into the site using Env variables", () => {
     cy.visit("/login");
 
-    const username = Cypress.env("username");
+    const username = Cypress.env("USERNAME");
     const password = Cypress.env("PASSWORD");
     cy.login(username, password);
 
-    cy.get("[data-testid=SearchInput]").should("be.visible");
-    cy.get("[data-testid=NotificationsButton]").should("be.visible");
-    cy.get("[data-testid=UserIcon]").should("be.visible");
-    cy.get("[data-testid=ChatIcon]").should("be.visible");
+    cy.isVisible([
+      "SearchInput",
+      "NotificationsButton",
+      "UserIcon",
+      "ChatIcon",
+    ]);
   });
 
   it("searches for an item", () => {
-    cy.get("[data-testid=SearchInput]").type("baseball cards{enter}");
-
-    cy.get("[data-testid=SearchKeyword]").should("contain", "baseball cards");
+    cy.itemSearch();
   });
 
   it("selects item", () => {
@@ -37,24 +33,14 @@ describe("Mercari User Test", () => {
   });
 
   it("adds item to cart", () => {
-    cy.get(
-      "[data-testid=AddToCartButton_aboveDesktop_belowDesktop_revamp]"
-    ).click();
-    cy.get("[data-testid=CartIconWithCounter]").click();
-    cy.get("[data-testid=CartCount]").should("contain", "1 item");
+    cy.addToCart();
   });
 
   it("removes item from cart", () => {
-    cy.get("[data-testid=CartItemDesktop] button").contains("Remove").click();
-    cy.get(".ConfirmationDialog__ConfirmFooter-cjqtjk-0 button")
-      .contains("OK")
-      .click();
+    cy.removeCartItems();
   });
 
-  it("removes item from cart", () => {
-    cy.get("[data-testid=UserIcon]").click();
-    cy.get("[data-testid=LogoutMenuItem]").click();
-
-    cy.get("[data-testid=LoginButton]").should("be.visible");
+  it("logs out", () => {
+    cy.logOut();
   });
 });
