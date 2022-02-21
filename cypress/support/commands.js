@@ -10,7 +10,7 @@
 //
 
 //TestId helper function
-const cyTestid = (id) => cy.get(`[data-testid="${id}"]`);
+export const cyTestid = (id) => cy.get(`[data-testid="${id}"]`);
 
 Cypress.Commands.add("login", (username, password) => {
   //verify that username is a string and it exists
@@ -35,7 +35,6 @@ Cypress.Commands.add("addToCart", () => {
 
 Cypress.Commands.add("loadHomePage", () => {
   const homePageSelectors = [
-    "MercariLogo",
     "SearchInput",
     "SignupButton",
     "LoginButton",
@@ -46,13 +45,16 @@ Cypress.Commands.add("loadHomePage", () => {
     cy.get(`[data-testid=${testid}]`).should("be.visible");
   });
 });
+
 Cypress.Commands.add("itemSearch", () => {
   cyTestid("SearchInput").type("baseball cards{enter}");
+  cy.location("pathname").should("equal", "/search/");
   cyTestid("SearchKeyword").should("contain", "baseball cards");
 });
 
 Cypress.Commands.add("removeCartItems", () => {
   cy.get("[data-testid=CartItemDesktop] button").contains("Remove").click();
+
   cy.get(".ConfirmationDialog__ConfirmFooter-cjqtjk-0 button")
     .contains("OK")
     .click();
@@ -70,4 +72,8 @@ Cypress.Commands.add("logOut", () => {
 
 Cypress.Commands.add("isVisible", (testIds) => {
   testIds.forEach((ids) => cy.get(`data-testid=${ids}`)).should("be.visible");
+});
+
+Cypress.Commands.add("getByTestId", (id) => {
+  cy.get(`[data-testid="${id}"]`);
 });
